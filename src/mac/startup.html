@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="https://ucarecdn.com/0e68ea70-c234-4ade-a123-9b5f45f9521c/Icon.png" type="image/x-icon">
+    <title>macOS</title>
+</head>
+<style>
+    body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: black;
+}
+
+.container {
+    text-align: center;
+}
+
+.logo img {
+    width: 65px; /* Adjust size as needed */
+}
+
+.loading-bar {
+    width: 150%; /* Width of the loading bar */
+    height: 5px; /* Height of the loading bar */
+    background-color: #444;
+    margin-left: -13px;
+    margin-top: 12px;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.fill {
+    height: 100%;
+    background-color: white;
+    width: 0;
+    animation: fillAnimation 3s forwards;
+}
+
+@keyframes fillAnimation {
+    to {
+        width: 100%;
+    }
+}
+
+</style>
+<body>
+
+    <div class="container">
+        <div class="logo">
+            <img src="https://ucarecdn.com/539b07c0-bb51-4bf5-b1fc-ebf79124de75/Apple.png" alt="Apple Logo">
+        </div>
+        <div class="loading-bar">
+            <div class="fill"></div>
+        </div>
+    </div>
+    <script>
+        setTimeout(() => {
+            window.location.href = 'index.html';
+        }, 2300);
+    </script>
+</body>
+</html>

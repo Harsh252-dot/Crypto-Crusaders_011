@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="shortcut icon" href="https://ucarecdn.com/3e3a55e2-e320-4e5e-b697-63cc2ce35eb9/logo.webp" type="image/x-icon" />
+  <title>OS Simulation</title>
+  <style>
+    body {
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: cover;
+      background-image: url('https://img.freepik.com/premium-photo/modern-abstract-3d-geometric-shapes-background-design-wallpaper_927984-3881.jpg');
+/*       background: linear-gradient(135deg, #1e3a61 25%, #8a2e14 50%, #1c1f26 75%); */
+/*       background-size: 400% 400%;
+      animation: gradientAnimation 10s ease infinite; */
+      color: white;
+      font-family: "Courier New", Courier, monospace;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      overflow: hidden;
+    }
+
+    @keyframes gradientAnimation {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Terminal window */
+    .terminal-container {
+      position: absolute;
+      top: 20%;
+      background-color: #2d2d2d;
+      width: 80%;
+      max-width: 800px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      cursor: move;
+    }
+
+    /* Terminal header */
+    .terminal-header {
+      background-color: #212121;
+      padding: 2px 10px;
+      opacity: 0.89;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+      cursor: grab;
+    }
+
+    .terminal-header button {
+      background-color: red;
+      border: none;
+      border-radius: 50%;
+      width: 13px;
+      height: 13px;
+      margin-right: 10px;
+      margin-left: 8px;
+      cursor: pointer;
+    }
+
+    /* Terminal content */
+    .terminal-content {
+      background-color: #340b24;
+      padding: 20px;
+      color: #269661;
+      height: 300px;
+      overflow-y: auto;
+      padding: 5px 10px;
+    }
+
+    .terminal-content p {
+      color: white;
+      opacity: 0.8;
+    }
+
+    /* Align label and input */
+    .input-container {
+      display: flex;
+      align-items: center;
+      position: relative;
+    }
+
+    .terminal-input {
+      background: none;
+      border: none;
+      color: white;
+      opacity: 0.8;
+      font-size: 16px;
+      width: 100%;
+      outline: none;
+      padding-left: 8px;
+      caret-color: green;
+    }
+
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+
+    /* Custom blinking caret */
+    .terminal-input::after {
+      content: "";
+      display: inline-block;
+      width: 8px;
+      height: 1.1em;
+      background: green;
+      animation: blink 1s step-start infinite;
+      position: absolute;
+      left: calc(100% - 8px);
+      bottom: 0;
+      margin-left: -2px;
+    }
+
+    /* Graphical OS option */
+    .os-options {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: start;
+      gap: 10px;
+    }
+
+    .os-options div {
+      border: 1px solid rgba(245, 245, 245, 0.5);
+      height: 84px;
+      width: 300px;
+      padding: 20px 25px;
+      background-color: #33333371;
+      border-radius: 6px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      box-sizing: border-box;
+    }
+
+    .os-options div:hover {
+      transform: scale(1.03);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+      background-color: #444444;
+    }
+
+    #ubuntu img {
+      max-width: 68px;
+      object-fit: contain;
+      margin-left: -18px;
+      margin-right: -10px;
+    }
+
+    #mac img { max-width: 53px; object-fit: contain; margin-left: -12px; }
+    #mac img, #ubuntu img { border-radius: 50%; }
+    #window img { max-width: 75px; margin-left: -12px; margin-right: -2px; }
+
+    #mac h2, #ubuntu h2, #window h2 {
+      color: gray;
+      font-weight: 550;
+      font-size: 29px;
+      letter-spacing: 1px;
+      font-family: system-ui;
+    }
+
+    .os-options p {
+      margin: 2px 0px 0px 7px;
+      font-size: 14px;
+      font-family: system-ui;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="os-options" id="os-options">
+    <div onclick="redirectToOS('ubuntu')" id="ubuntu">
+      <img src="https://ucarecdn.com/e1067d8f-4dea-4b10-b025-d831ffe9ee18/ubuntu_logo.webp" alt="linux">
+      <h2>Ubuntu</h2>
+    </div>
+    <div onclick="redirectToOS('mac')" id="mac">
+      <img src="https://ucarecdn.com/0e68ea70-c234-4ade-a123-9b5f45f9521c/Icon.pngg" alt="macOS">
+      <h2>macOS</h2>
+    </div>
+    <div onclick="redirectToOS('window')" id="window">
+      <img src="https://ucarecdn.com/ff1adc4a-7401-4993-a319-7aa629fd7eb1/windowsicon.png" alt="windows">
+      <h2>Windows</h2>
+    </div>
+    <p onclick="openTerminal()">Prefer Terminal?</p>
+  </div>
+
+  <div class="terminal-container" id="terminal">
+    <div class="terminal-header" id="terminal-header">
+      <button onclick="closeTerminal()"></button>
+      <p>machine@masai:~</p>
+    </div>
+    <div class="terminal-content">
+      <p>Type "sudo install [os_name]" to install your preferred OS:</p>
+      <div class="input-container">
+        <label for="terminal-input">machine@masai:~$</label>
+        <input class="terminal-input" type="text" id="terminal-input" autofocus autocomplete="off" spellcheck="false" />
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const terminalInput = document.getElementById("terminal-input");
+    const terminal = document.getElementById("terminal");
+    const osOptions = document.getElementById("os-options");
+    const terminalHeader = document.getElementById("terminal-header");
+
+    // Handling commands
+    terminalInput.addEventListener("keypress", function (e) {
+      if (e.key === "Enter") {
+        const command = terminalInput.value.trim().toLowerCase();
+        if (command === "sudo install ubuntu") {
+          window.location.href = "src/ubuntu/startup.html";
+        } else if (command === "sudo install windows") {
+          window.location.href = "src/windows/startup.html";
+        } else if (command === "sudo install mac") {
+          window.location.href = "src/mac/startup.html";
+        } else {
+          alert("sudo: command not found");
+        }
+
+        terminalInput.value = ""; // clear terminal
+      }
+    });
+
+    // Redirect GUI buttons
+    function redirectToOS(os) {
+      if (os === "ubuntu") {
+        window.location.href = "src/ubuntu/startup.html";
+      } else if (os === "mac") {
+        window.location.href = "src/mac/startup.html";
+      } else if (os === "window") {
+        window.location.href = "src/windows/startup.html";
+      }
+    }
+
+    // Open terminal
+    function openTerminal() {
+      terminal.style.display = "flex";
+      osOptions.style.display = "none";
+    }
+
+    // Close terminal
+    function closeTerminal() {
+      terminal.style.display = "none";
+      osOptions.style.display = "block";
+    }
+
+    // Drag terminal
+    let isDragging = false;
+    let offsetX = 0;
+    let offsetY = 0;
+
+    terminalHeader.addEventListener("mousedown", (e) => {
+      isDragging = true;
+      offsetX = e.clientX - terminal.offsetLeft;
+      offsetY = e.clientY - terminal.offsetTop;
+      terminal.style.cursor = "grabbing";
+    });
+
+    document.addEventListener("mousemove", (e) => {
+      if (isDragging) {
+        terminal.style.left = `${e.clientX - offsetX}px`;
+        terminal.style.top = `${e.clientY - offsetY}px`;
+      }
+    });
+
+    document.addEventListener("mouseup", () => {
+      isDragging = false;
+      terminal.style.cursor = "grab";
+    });
+  </script>
+</body>
+</html>
